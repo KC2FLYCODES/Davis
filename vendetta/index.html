@@ -38,7 +38,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=Montserrat:wght@300;400;500;600&family=Tenor+Sans&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20261120d">
+<link rel="stylesheet" href="style.css?v=20261123a">
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -65,10 +65,11 @@
 <main id="main">
 <section class="hero" id="top">
   <div class="hero-bg" aria-hidden="true"></div>
-  <svg class="hero-mark" viewBox="0 0 600 600" fill="none" aria-hidden="true"><path d="M60 100 L300 520 L540 100" stroke="#8b2fc9" stroke-width="60" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  <div class="sweep" aria-hidden="true"></div>
+  <svg class="hero-mark" viewBox="0 0 600 600" fill="none" aria-hidden="true"><path class="vm-fill" d="M60 100 L300 520 L540 100" stroke="#8b2fc9" stroke-width="60" stroke-linecap="round" stroke-linejoin="round"/><path class="vm-line" pathLength="1" d="M60 100 L300 520 L540 100" stroke="#b06fe6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
   <div class="wrap hero-in">
     <p class="eyebrow">Raleigh · Durham · Cary · Apex</p>
-    <h1>Obsessive precision. <em>In your driveway.</em></h1>
+    <h1>Obsessive precision. <em><span class="up">In your driveway.</span><span class="it" aria-hidden="true">In your driveway.</span></em></h1>
     <p class="hero-sub">Four years of showroom-level detailing brought to your home or office. No shop and no waiting room. We arrive fully equipped and do the work where your car already is.</p>
     <div class="hero-cta">
       <a class="btn btn-v" href="#book">Request a booking</a>
@@ -116,7 +117,7 @@
       </div>
       <div class="item reveal">
         <span class="item-n">04</span>
-        <h3>Ceramic Coating<small>Long-term protection</small></h3>
+        <h3>Ceramic Coating<small>Long-term protection</small><span class="beads" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span></h3>
         <p data-pkg="ceramic">Hydrophobic protection that repels water, UV and contaminants. A serious investment in your paint.</p>
         <a class="btn btn-g btn-sm" href="#book" data-book="Ceramic Coating">Book</a>
       </div>
@@ -259,7 +260,7 @@
 <footer class="ftr">
   <div class="wrap ftr-in">
     <span>&copy; <span id="yr">2026</span> Vendetta Mobile Detailing · Raleigh, NC</span>
-    <span class="ftr-credit" id="admTrigger">Site by <a href="https://thrustra.com" target="_blank" rel="noopener">Thrustra</a></span>
+    <span class="ftr-credit"><span id="admTrigger">Site by</span> <a href="https://thrustra.com" target="_blank" rel="noopener">Thrustra</a></span>
   </div>
 </footer>
 
@@ -299,8 +300,10 @@
   </div>
 </div>
 
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
-<script src="script.js?v=20261120d"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script defer src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script defer src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+<script defer src="script.js?v=20261123a"></script>
 </body>
 </html>
