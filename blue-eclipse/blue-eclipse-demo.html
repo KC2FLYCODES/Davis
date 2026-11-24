@@ -37,7 +37,7 @@
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300..700;1,300..700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{
   --deep:#060d1a;--navy:#0b1f3a;--mid:#0e3a6e;--aqua:#00c4e8;--aqua-d:#0089a8;
@@ -80,8 +80,12 @@ button{font:inherit;cursor:pointer}
 
 /* hero */
 .hero{position:relative;padding:clamp(120px,16vh,170px) 0 clamp(56px,8vw,96px);overflow:hidden}
-.hero::before{content:'';position:absolute;right:-18vw;top:-10vw;width:62vw;height:62vw;max-width:900px;max-height:900px;border-radius:50%;border:1px solid var(--line-dark);pointer-events:none}
-.hero::after{content:'';position:absolute;right:-10vw;top:-2vw;width:62vw;height:62vw;max-width:900px;max-height:900px;border-radius:50%;background:var(--deep);box-shadow:-1px 0 0 var(--line-dark);pointer-events:none}
+.caustics{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;opacity:0;transition:opacity 1.6s ease}
+.caustics.on{opacity:1}
+.eclipse{position:absolute;inset:0;pointer-events:none}
+.eclipse i{position:absolute;width:62vw;height:62vw;max-width:900px;max-height:900px;border-radius:50%}
+.ec-ring{right:-18vw;top:-10vw;border:1px solid var(--line-dark)}
+.ec-moon{right:-10vw;top:-2vw;background:radial-gradient(circle at 38% 40%,#0a1628 0%,var(--deep) 62%);box-shadow:-1px 0 0 rgba(0,196,232,.28),-24px 0 80px -30px rgba(0,196,232,.25);will-change:transform}
 .hero-grid{position:relative;z-index:1;display:grid;grid-template-columns:1.25fr .9fr;gap:clamp(2rem,5vw,5rem);align-items:end}
 .eyebrow{font-size:.72rem;font-weight:500;letter-spacing:.28em;text-transform:uppercase;color:var(--aqua);margin-bottom:1.4rem}
 .hero h1{font-family:var(--serif);font-weight:300;color:var(--white);font-size:clamp(2.9rem,7.2vw,6.2rem);line-height:.98;letter-spacing:-.01em}
@@ -97,6 +101,12 @@ button{font:inherit;cursor:pointer}
 .visit li{counter-increment:v;display:grid;grid-template-columns:2.2rem 1fr;gap:.4rem;padding:.8rem 0;border-top:1px solid var(--line-dark);color:var(--white);font-size:.95rem}
 .visit li::before{content:counter(v,decimal-leading-zero);font-family:var(--serif);color:var(--aqua);font-size:1.05rem}
 .visit li span{display:block;font-size:.8rem;color:var(--muted);margin-top:.1rem}
+.visit li.has-tick{grid-template-columns:2.2rem 1fr 22px;align-items:start}
+.tick{width:22px;height:22px;margin-top:1px}
+.tick circle{fill:none;stroke:rgba(0,196,232,.25);stroke-width:1}
+.tick path{fill:none;stroke:var(--aqua);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset .5s cubic-bezier(.65,0,.35,1)}
+.visit li.done .tick path{stroke-dashoffset:0}
+.visit li.done .tick circle{stroke:rgba(0,196,232,.6);transition:stroke .4s}
 .visit-foot{margin-top:1rem;font-size:.78rem;color:var(--muted)}
 
 /* towns strip */
@@ -124,6 +134,27 @@ button{font:inherit;cursor:pointer}
 .plan-tag{display:block;font-family:var(--sans);font-size:.7rem;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--aqua-d);margin-top:.45rem}
 .plan p{color:#3d5673;max-width:36rem}
 .plan.feature{position:relative}.plan.feature::before{content:"";position:absolute;inset:0 0 0 calc(var(--gutter) * -1);background:linear-gradient(90deg,rgba(0,196,232,.1),transparent 70%);z-index:-1}.plans{position:relative;z-index:0}
+.plan-name{transition:color .4s}
+.plan.act .plan-name{color:var(--aqua-d)}
+.freq{display:flex;align-items:center;gap:3px;margin-top:.7rem;font-size:.78rem;color:#3d5673}
+.freq i{width:5px;height:14px;background:var(--aqua-d);border-radius:1px}
+.freq i.off{background:var(--line-light)}
+.freq i:last-of-type{margin-right:.5rem}
+.plans-wrap{display:block}
+.gauge{display:none}
+@media (min-width:961px){
+  .plans-wrap{display:grid;grid-template-columns:120px minmax(0,1fr);gap:clamp(2rem,4vw,4rem);align-items:start}
+  .gauge{display:block;position:sticky;top:110px;padding-top:1.6rem}
+  .g-tank{position:relative;height:220px;border:1px solid var(--line-light);border-top:0;border-radius:0 0 4px 4px;overflow:hidden;background:linear-gradient(#fff0,rgba(11,31,58,.03))}
+  .g-water{position:absolute;inset:0;background:linear-gradient(180deg,#22cfee,#0089a8);transform:translateY(0);transition:transform .9s cubic-bezier(.65,0,.35,1)}
+  .g-wave{position:absolute;left:0;top:-15px;width:200%;height:16px;fill:#22cfee;animation:wave 3.2s linear infinite}
+  .g-num{margin-top:1rem;display:flex;align-items:baseline;gap:.6rem;color:var(--ink)}
+  .g-num b{font-family:var(--serif);font-weight:400;font-size:3rem;line-height:1;color:var(--ink);min-width:1.1ch}
+  .g-num span{font-size:.7rem;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:#3d5673;line-height:1.35}
+  .js-motion .freq{display:none}
+}
+@keyframes wave{to{transform:translateX(-50%)}}
+.sec-head h2,.quote-aside h2{font-weight:var(--w,300)}
 
 .addons{margin-top:clamp(3rem,6vw,5rem);display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-top:2px solid var(--ink)}
 .addon{padding:1.5rem 1.4rem 1.5rem 0;border-right:1px solid var(--line-light)}
@@ -243,6 +274,8 @@ select.inp option{background:var(--navy)}
 
 .reveal{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease}
 .reveal.in{opacity:1;transform:none}
+.inp.bad,.chips.bad span{border-color:#ff9b7a}
+body.lock{overflow:hidden}
 
 @media (max-width:960px){
   .hero-grid,.owner-grid,.quote-grid,.sec-head{grid-template-columns:1fr}
@@ -257,7 +290,7 @@ select.inp option{background:var(--navy)}
 @media (max-width:760px){
   .nav{display:none}
   .hdr-cta{display:none}
-  .hero::before,.hero::after{display:none}
+  .eclipse{display:none}
   .gal{grid-template-columns:1fr 1fr}
   .gal button:first-child{grid-column:span 2;grid-row:auto;aspect-ratio:4/3}
   .row2{grid-template-columns:1fr}
@@ -273,7 +306,6 @@ select.inp option{background:var(--navy)}
   *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
   .reveal{opacity:1;transform:none}
 }
-
 </style>
 </head>
 <body>
@@ -297,6 +329,8 @@ select.inp option{background:var(--navy)}
 
 <main id="main">
 <section class="hero" id="top">
+  <canvas class="caustics" aria-hidden="true"></canvas>
+  <div class="eclipse" aria-hidden="true"><i class="ec-ring"></i><i class="ec-moon"></i></div>
   <div class="wrap hero-grid">
     <div>
       <p class="eyebrow">Cary · Apex · Wake Forest · Durham · Raleigh</p>
@@ -334,22 +368,28 @@ select.inp option{background:var(--navy)}
       <div><p class="eyebrow">Maintenance plans</p><h2>Pick the rhythm<br>your pool <em>needs.</em></h2></div>
       <p>Every plan includes full water chemistry testing and correction. The difference is how often I'm there and how deep each visit goes.</p>
     </div>
+    <div class="plans-wrap">
+    <div class="gauge" aria-hidden="true">
+      <div class="g-tank"><div class="g-water"><svg class="g-wave" viewBox="0 0 240 16" preserveAspectRatio="none"><path d="M0 8 Q30 0 60 8 T120 8 T180 8 T240 8 V16 H0Z"/></svg></div></div>
+      <p class="g-num"><b>4</b><span>visits<br>a month</span></p>
+    </div>
     <div class="plans">
-      <div class="plan feature reveal">
-        <div><h3 class="plan-name">Weekly</h3><span class="plan-tag">Most hands-on</span></div>
+      <div class="plan feature reveal" data-visits="4">
+        <div><h3 class="plan-name">Weekly</h3><span class="plan-tag">Most hands-on</span><span class="freq"><i></i><i></i><i></i><i></i>About 4 visits a month</span></div>
         <p>I come out every week for chemical balancing, skimming, brushing and vacuuming. Built for pools in regular use that need to stay swim-ready all season.</p>
         <a class="btn btn-ink" href="#quote" data-plan="Weekly">Quote weekly</a>
       </div>
-      <div class="plan reveal">
-        <div><h3 class="plan-name">Bi-weekly</h3><span class="plan-tag">Steady upkeep</span></div>
+      <div class="plan reveal" data-visits="2">
+        <div><h3 class="plan-name">Bi-weekly</h3><span class="plan-tag">Steady upkeep</span><span class="freq"><i></i><i></i><i class="off"></i><i class="off"></i>2 visits a month</span></div>
         <p>A full top-to-bottom service every two weeks: water chemistry, cleaning, and a complete check of your equipment.</p>
         <a class="btn btn-ink" href="#quote" data-plan="Bi-weekly">Quote bi-weekly</a>
       </div>
-      <div class="plan reveal">
-        <div><h3 class="plan-name">Monthly</h3><span class="plan-tag">Lower-use pools</span></div>
+      <div class="plan reveal" data-visits="1">
+        <div><h3 class="plan-name">Monthly</h3><span class="plan-tag">Lower-use pools</span><span class="freq"><i></i><i class="off"></i><i class="off"></i><i class="off"></i>1 visit a month</span></div>
         <p>A thorough monthly visit with a full clean, chemical correction and equipment inspection. For pools that see less use but still need professional care.</p>
         <a class="btn btn-ink" href="#quote" data-plan="Monthly">Quote monthly</a>
       </div>
+    </div>
     </div>
 
     <p class="addons-label">Add-ons and one-time work</p>
@@ -477,7 +517,7 @@ select.inp option{background:var(--navy)}
 <footer class="ftr">
   <div class="wrap ftr-in">
     <span>&copy; <span id="yr">2026</span> Blue Eclipse Pool &amp; Spa Maintenance LLC · Cary · Apex · Wake Forest · Durham · Raleigh · Licensed &amp; insured</span>
-    <span class="ftr-credit" id="admTrigger">Site by <a href="https://thrustra.com" target="_blank" rel="noopener">Thrustra</a></span>
+    <span class="ftr-credit"><span id="admTrigger">Site by</span> <a href="https://thrustra.com" target="_blank" rel="noopener">Thrustra</a></span>
   </div>
 </footer>
 
@@ -516,9 +556,11 @@ select.inp option{background:var(--navy)}
   </div>
 </div>
 
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
-<script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script defer src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script defer src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+<script>document.addEventListener('DOMContentLoaded',function(){
 /* Blue Eclipse Pool & Spa — site script */
 (function () {
   'use strict';
@@ -542,6 +584,10 @@ select.inp option{background:var(--navy)}
 
   var $ = function (s, c) { return (c || document).querySelector(s); };
   var $$ = function (s, c) { return Array.prototype.slice.call((c || document).querySelectorAll(s)); };
+
+  var REDUCED = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var CONN = navigator.connection || {};
+  var LOW = !!(CONN.saveData || (navigator.deviceMemory && navigator.deviceMemory <= 2) || (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 2));
 
   /* ── phone wiring ── */
   var digits = CONFIG.phone.replace(/\D/g, '');
@@ -572,7 +618,7 @@ select.inp option{background:var(--navy)}
     b.addEventListener('click', function () {
       var v = b.getAttribute('data-plan');
       var r = $('input[name="Plan"][value="' + v + '"]');
-      if (r) r.checked = true;
+      if (r) { r.checked = true; var g = r.closest('.chips'); if (g) g.classList.remove('bad'); }
     });
   });
 
@@ -585,16 +631,32 @@ select.inp option{background:var(--navy)}
       steps.forEach(function (s, k) { s.classList.toggle('on', k === i); });
       bars.forEach(function (b, k) { b.classList.toggle('on', k <= i); });
       err.textContent = '';
+      if (form.getBoundingClientRect().top < 0) form.scrollIntoView({ behavior: REDUCED ? 'auto' : 'smooth', block: 'start' });
     };
     var valid = function (i) {
-      var s = steps[i], ok = true;
+      var s = steps[i], ok = true, first = null;
       $$('input[required],select[required],textarea[required]', s).forEach(function (f) {
-        if (f.type === 'radio') { if (!$('input[name="' + f.name + '"]:checked', s)) ok = false; }
-        else if (!f.checkValidity()) ok = false;
+        var bad;
+        if (f.type === 'radio') {
+          bad = !$('input[name="' + f.name + '"]:checked', s);
+          var g = f.closest('.chips'); if (g) g.classList.toggle('bad', bad);
+        } else {
+          bad = !f.checkValidity();
+          f.classList.toggle('bad', bad);
+          f.setAttribute('aria-invalid', bad ? 'true' : 'false');
+        }
+        if (bad) { ok = false; if (!first) first = f; }
       });
-      if (!ok) err.textContent = 'Fill in the highlighted fields to continue.';
+      if (!ok) { err.textContent = 'Fill in the highlighted fields to continue.'; first.focus(); }
       return ok;
     };
+    var clearBad = function (e) {
+      var f = e.target;
+      if (f.type === 'radio' || f.type === 'checkbox') { var g = f.closest('.chips'); if (g) g.classList.remove('bad'); }
+      else if (f.classList.contains('bad') && f.checkValidity()) { f.classList.remove('bad'); f.setAttribute('aria-invalid', 'false'); }
+    };
+    form.addEventListener('change', clearBad);
+    form.addEventListener('input', clearBad);
     $$('[data-next]', form).forEach(function (b) { b.addEventListener('click', function () { if (valid(cur)) show(cur + 1); }); });
     $$('[data-back]', form).forEach(function (b) { b.addEventListener('click', function () { show(cur - 1); }); });
 
@@ -611,7 +673,11 @@ select.inp option{background:var(--navy)}
           form.reset();
           steps.forEach(function (s) { s.classList.remove('on'); });
           $('.steps', form).hidden = true;
-          $('.form-done', form).classList.add('on');
+          err.textContent = '';
+          var done = $('.form-done', form);
+          done.classList.add('on');
+          done.setAttribute('tabindex', '-1'); done.focus({ preventScroll: true });
+          form.scrollIntoView({ behavior: REDUCED ? 'auto' : 'smooth', block: 'center' });
           if (window.gtag) window.gtag('event', 'generate_lead', { form: 'quote' });
         })
         .catch(function () {
@@ -621,16 +687,16 @@ select.inp option{background:var(--navy)}
     });
   }
 
-  /* ── firebase gallery ── */
+  /* ── firebase gallery (loaded lazily: photos are stored inline, so keep them off the critical path) ── */
   var db = null;
   try {
     if (window.firebase) { firebase.initializeApp(CONFIG.firebase); db = firebase.database(); }
   } catch (e) { console.warn('Firebase init failed', e); }
 
-  var photos = [];
+  var photos = [], admOpen = false, galStarted = false;
   var order = function (p) { return p.order !== undefined ? p.order : -p.ts; };
   var gal = $('#gallery-grid');
-  var lb = $('#lb'), lbImg = $('#lb img'), lbIdx = 0;
+  var lb = $('#lb'), lbImg = $('#lb img'), lbIdx = 0, lbLast = null;
 
   function renderGallery() {
     if (!gal) return;
@@ -647,23 +713,11 @@ select.inp option{background:var(--navy)}
       b.addEventListener('click', function () { openLb(i); });
       gal.appendChild(b);
     });
+    if (window.ScrollTrigger) requestAnimationFrame(function () { window.ScrollTrigger.refresh(); });
   }
-  function openLb(i) { lbIdx = i; lbImg.src = photos[i].url; lb.classList.add('open'); $('.lb-x', lb).focus(); }
-  function stepLb(d) { lbIdx = (lbIdx + d + photos.length) % photos.length; lbImg.src = photos[lbIdx].url; }
-  if (lb) {
-    $('.lb-x', lb).addEventListener('click', function () { lb.classList.remove('open'); });
-    $('.lb-prev', lb).addEventListener('click', function () { stepLb(-1); });
-    $('.lb-next', lb).addEventListener('click', function () { stepLb(1); });
-    lb.addEventListener('click', function (e) { if (e.target === lb) lb.classList.remove('open'); });
-    document.addEventListener('keydown', function (e) {
-      if (!lb.classList.contains('open')) return;
-      if (e.key === 'Escape') lb.classList.remove('open');
-      if (e.key === 'ArrowLeft') stepLb(-1);
-      if (e.key === 'ArrowRight') stepLb(1);
-    });
-  }
-
-  if (db) {
+  function startGallery() {
+    if (galStarted) return; galStarted = true;
+    if (!db) { renderGallery(); return; }
     db.ref(CONFIG.dbPath).on('value', function (snap) {
       var d = snap.val() || {};
       photos = Object.keys(d).map(function (k) { var v = d[k]; v.key = k; return v; })
@@ -672,10 +726,35 @@ select.inp option{background:var(--navy)}
       renderGallery();
       if (admOpen) renderAdmin();
     }, function (e) { console.warn('Gallery read failed', e); renderGallery(); });
-  } else { renderGallery(); }
+  }
+  if (gal && 'IntersectionObserver' in window) {
+    var gio = new IntersectionObserver(function (es) { if (es[0].isIntersecting) { gio.disconnect(); startGallery(); } }, { rootMargin: '900px 0px' });
+    gio.observe(gal);
+    window.addEventListener('load', function () { setTimeout(startGallery, 3500); });
+  } else { startGallery(); }
 
-  /* ── admin: triple-tap footer credit → PIN ── */
-  var adm = $('#adm'), pinVal = '', taps = 0, tapT = null, admOpen = false;
+  function closeLb() { lb.classList.remove('open'); document.body.classList.remove('lock'); if (lbLast) lbLast.focus(); }
+  function openLb(i) { lbLast = document.activeElement; lbIdx = i; lbImg.src = photos[i].url; lb.classList.add('open'); document.body.classList.add('lock'); $('.lb-x', lb).focus(); }
+  function stepLb(d) { if (!photos.length) return; lbIdx = (lbIdx + d + photos.length) % photos.length; lbImg.src = photos[lbIdx].url; }
+  if (lb) {
+    $('.lb-x', lb).addEventListener('click', closeLb);
+    $('.lb-prev', lb).addEventListener('click', function () { stepLb(-1); });
+    $('.lb-next', lb).addEventListener('click', function () { stepLb(1); });
+    lb.addEventListener('click', function (e) { if (e.target === lb) closeLb(); });
+    var sx = null;
+    lb.addEventListener('touchstart', function (e) { sx = e.touches[0].clientX; }, { passive: true });
+    lb.addEventListener('touchend', function (e) { if (sx === null) return; var dx = e.changedTouches[0].clientX - sx; if (Math.abs(dx) > 50) stepLb(dx < 0 ? 1 : -1); sx = null; });
+    document.addEventListener('keydown', function (e) {
+      if (!lb.classList.contains('open')) return;
+      if (e.key === 'Escape') closeLb();
+      if (e.key === 'ArrowLeft') stepLb(-1);
+      if (e.key === 'ArrowRight') stepLb(1);
+      if (e.key === 'Tab') { var f = $$('button', lb), a = f.indexOf(document.activeElement); e.preventDefault(); f[(a + (e.shiftKey ? -1 : 1) + f.length) % f.length].focus(); }
+    });
+  }
+
+  /* ── admin: triple-tap "Site by" in the footer → PIN ── */
+  var adm = $('#adm'), pinVal = '', taps = 0, tapT = null;
   var trig = $('#admTrigger');
   function tap(e) {
     e.preventDefault();
@@ -687,11 +766,12 @@ select.inp option{background:var(--navy)}
     trig.addEventListener('click', function (e) { if (!('ontouchstart' in window)) tap(e); });
   }
   function dots() { $$('.pin-dots i', adm).forEach(function (d, i) { d.classList.toggle('on', i < pinVal.length); }); }
-  function openAdm() { pinVal = ''; dots(); $('.pin', adm).hidden = false; $('.adm-panel', adm).classList.remove('on'); admOpen = false; adm.classList.add('open'); }
-  function closeAdm() { adm.classList.remove('open'); admOpen = false; }
+  function openAdm() { startGallery(); pinVal = ''; dots(); $('.pin', adm).hidden = false; $('.adm-panel', adm).classList.remove('on'); admOpen = false; adm.classList.add('open'); document.body.classList.add('lock'); }
+  function closeAdm() { adm.classList.remove('open'); admOpen = false; document.body.classList.remove('lock'); }
   if (adm) {
     $('.adm-hd button', adm).addEventListener('click', closeAdm);
     adm.addEventListener('click', function (e) { if (e.target === adm) closeAdm(); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && adm.classList.contains('open')) closeAdm(); });
     $$('.pad button', adm).forEach(function (b) {
       b.addEventListener('click', function () {
         var k = b.getAttribute('data-k');
@@ -760,8 +840,150 @@ select.inp option{background:var(--navy)}
   }
 
   var y = $('#yr'); if (y) y.textContent = new Date().getFullYear();
-})();
 
-</script>
+  /* ════════════ MOTION ════════════ */
+
+  /* visit checklist: ticks off one by one after the hero lands */
+  var visitItems = $$('.visit li');
+  visitItems.forEach(function (li) {
+    li.classList.add('has-tick');
+    li.insertAdjacentHTML('beforeend', '<svg class="tick" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10"/><path pathLength="1" d="M6.5 11.5l3 3 6-6.5"/></svg>');
+  });
+  if (REDUCED) visitItems.forEach(function (li) { li.classList.add('done'); });
+  else visitItems.forEach(function (li, i) { setTimeout(function () { li.classList.add('done'); }, 1100 + i * 420); });
+
+  /* WebGL caustics: light through water, bent by the cursor */
+  (function caustics() {
+    var cv = $('.caustics'), hero = $('.hero');
+    if (!cv || !hero) return;
+    var gl;
+    try { gl = cv.getContext('webgl', { alpha: true, antialias: false, depth: false, stencil: false, premultipliedAlpha: true, powerPreference: 'low-power' }); } catch (e) { gl = null; }
+    if (!gl) return;
+    var VS = 'attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}';
+    var FS = [
+      'precision mediump float;',
+      'uniform vec2 r;uniform float t;uniform vec2 m;uniform float mob;',
+      'float layer(vec2 p,float t,float f){',
+      '  vec2 q=p*(1.+f*.6)+vec2(sin(t*.23+f*1.7),cos(t*.19+f*2.3))*1.2;',
+      '  q+=.5*vec2(sin(q.y*1.15+t*.5+f),sin(q.x*1.05-t*.42-f));',
+      '  float a=sin(q.x*1.8+.9*sin(q.y*1.5+t*.55));',
+      '  float b=sin(q.y*1.6+.9*sin(q.x*1.3-t*.47));',
+      '  return pow(1.-abs(a),6.)+pow(1.-abs(b),6.);',
+      '}',
+      'void main(){',
+      '  vec2 uv=gl_FragCoord.xy/r;float s=min(r.x,r.y);',
+      '  vec2 p=(gl_FragCoord.xy-.5*r)/s*2.6;',
+      '  vec2 mp=(m*r-.5*r)/s*2.6;',
+      '  vec2 dv=p-mp;float d=dot(dv,dv);',
+      '  p-=dv*.22*exp(-d*1.6);',
+      '  float c=layer(p,t,0.)*.55+layer(p*1.35+3.1,t*1.1,1.)*.45;',
+      '  c=pow(c,1.6)*.9;',
+      '  float glow=exp(-d*.8);',
+      '  float mask=mix(.35+.65*smoothstep(0.,.6,uv.x),.5,mob)*smoothstep(0.,.4,uv.y);',
+      '  float a=clamp((c*.5+glow*.14)*mask,0.,.75);',
+      '  vec3 col=mix(vec3(0.,.55,.8),vec3(.6,.96,1.),clamp(c*.6,0.,1.));',
+      '  gl_FragColor=vec4(col*a,a);',
+      '}'
+    ].join('\n');
+    function sh(type, src) { var s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s); if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) { console.warn(gl.getShaderInfoLog(s)); return null; } return s; }
+    var v = sh(gl.VERTEX_SHADER, VS), f = sh(gl.FRAGMENT_SHADER, FS);
+    if (!v || !f) return;
+    var pr = gl.createProgram(); gl.attachShader(pr, v); gl.attachShader(pr, f); gl.linkProgram(pr);
+    if (!gl.getProgramParameter(pr, gl.LINK_STATUS)) return;
+    gl.useProgram(pr);
+    var buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+    var loc = gl.getAttribLocation(pr, 'p'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+    var uR = gl.getUniformLocation(pr, 'r'), uT = gl.getUniformLocation(pr, 't'), uM = gl.getUniformLocation(pr, 'm'), uMob = gl.getUniformLocation(pr, 'mob');
+    var mobile = matchMedia('(max-width:760px)').matches;
+    var scale = LOW ? 0.33 : 0.5, mx = 0.72, my = 0.55, tx = mx, ty = my, hasPointer = false;
+    function size() {
+      var w = cv.clientWidth, h = cv.clientHeight;
+      cv.width = Math.max(1, Math.round(w * scale)); cv.height = Math.max(1, Math.round(h * scale));
+      gl.viewport(0, 0, cv.width, cv.height);
+    }
+    function draw(t) {
+      gl.uniform2f(uR, cv.width, cv.height); gl.uniform1f(uT, t); gl.uniform2f(uM, mx, my); gl.uniform1f(uMob, mobile ? 1 : 0);
+      gl.drawArrays(gl.TRIANGLES, 0, 3);
+    }
+    size();
+    window.addEventListener('resize', function () { mobile = matchMedia('(max-width:760px)').matches; size(); if (REDUCED) draw(14); });
+    if (REDUCED) { draw(14); cv.classList.add('on'); return; }
+
+    if (matchMedia('(pointer:fine)').matches) {
+      hero.addEventListener('pointermove', function (e) {
+        var b = cv.getBoundingClientRect(); hasPointer = true;
+        tx = (e.clientX - b.left) / b.width; ty = 1 - (e.clientY - b.top) / b.height;
+      }, { passive: true });
+      hero.addEventListener('pointerleave', function () { hasPointer = false; });
+    }
+    var raf = 0, visible = true, t0 = performance.now(), last = t0, n = 0, acc = 0, downgrades = 0, dead = false;
+    function frame(now) {
+      raf = 0;
+      if (!visible || document.hidden || dead) return;
+      var dt = now - last; last = now; n++;
+      if (n > 10 && n <= 70) acc += dt;
+      if (n === 70) {
+        if (acc / 60 > 30) {
+          if (downgrades === 0) { downgrades = 1; scale *= 0.6; size(); n = 0; acc = 0; }
+          else { dead = true; return; }   // keep the last frame as a still
+        }
+      }
+      var t = (now - t0) / 1000 * 0.6 + 6;
+      if (!hasPointer) { tx = 0.7 + Math.sin(t * 0.35) * 0.12; ty = 0.55 + Math.cos(t * 0.28) * 0.12; }
+      mx += (tx - mx) * 0.06; my += (ty - my) * 0.06;
+      draw(t);
+      raf = requestAnimationFrame(frame);
+    }
+    function kick() { if (!raf && visible && !document.hidden && !dead) { last = performance.now(); raf = requestAnimationFrame(frame); } }
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (es) { visible = es[0].isIntersecting; kick(); }).observe(hero);
+    }
+    document.addEventListener('visibilitychange', kick);
+    draw(6); cv.classList.add('on'); kick();
+  })();
+
+  /* GSAP layer: eclipse, heading weight, plan gauge */
+  function gsapLayer() {
+    var gsap = window.gsap, ST = window.ScrollTrigger;
+    if (!gsap || !ST) return;
+    gsap.registerPlugin(ST);
+    ST.config({ ignoreMobileResize: true });
+
+    /* plan gauge — how often I'm there */
+    var gauge = $('.gauge'), water = $('.g-water'), num = $('.g-num b'), plans = $$('.plan[data-visits]');
+    if (gauge && water && plans.length) {
+      document.documentElement.classList.add('js-motion');
+      var setPlan = function (p) {
+        var v = +p.getAttribute('data-visits');
+        plans.forEach(function (x) { x.classList.toggle('act', x === p); });
+        water.style.transform = 'translateY(' + ((1 - v / 4) * 100 * 0.92) + '%)';
+        num.textContent = v;
+        $('.g-num span').innerHTML = v === 1 ? 'visit<br>a month' : 'visits<br>a month';
+      };
+      setPlan(plans[0]);
+      plans.forEach(function (p) {
+        ST.create({ trigger: p, start: 'top 62%', end: 'bottom 62%', onToggle: function (s) { if (s.isActive) setPlan(p); } });
+      });
+    }
+
+    if (REDUCED) return;
+
+    /* eclipse: moon slides into place, then deepens with scroll */
+    var moon = $('.ec-moon'), ring = $('.ec-ring'), hero = $('.hero');
+    if (moon && getComputedStyle($('.eclipse')).display !== 'none') {
+      gsap.from(moon, { x: '16vw', duration: 2.2, ease: 'power3.out', delay: 0.15 });
+      gsap.from(ring, { scale: 0.92, opacity: 0, duration: 1.8, ease: 'power2.out' });
+      gsap.to(moon, { xPercent: -16, ease: 'none', scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom top', scrub: 0.6 } });
+    }
+
+    /* section headings gain weight as they rise into view */
+    $$('.sec-head h2, .quote-aside h2').forEach(function (h) {
+      gsap.fromTo(h, { '--w': 300 }, { '--w': 520, ease: 'none', scrollTrigger: { trigger: h, start: 'top 88%', end: 'top 40%', scrub: 0.4 } });
+    });
+  }
+  gsapLayer();   // deferred script: DOM is parsed; ScrollTrigger re-measures on load by itself
+})();
+});</script>
 </body>
 </html>
